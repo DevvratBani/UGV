@@ -1,4 +1,4 @@
-#include <Encoder.h> // this maynot be used, remove it nigga
+#include <Encoder.h> // this maynot be used
 
 #include <nRF24L01.h> 
 #include <printf.h>
@@ -57,7 +57,7 @@ void loop()
     // Control the main motors forward/backward based on joystick input
     leftMotor->run(yAxisValue > 0 ? FORWARD : BACKWARD);
     rightMotor->run(yAxisValue > 0 ? FORWARD : BACKWARD);
-    //troubleshoot these turns my guy
+    //troubleshoot these turns 
     if(xAxisValue > 0)
     {
       leftMotor->run(FORWARD);
@@ -83,7 +83,7 @@ void loop()
 
     // troubleshoot this turret too
     turret->setSpeed(abs(motorspeeed); //this liine wasnt her, but just experimenting
-                                       //it needs to be calibrated anyways bruh...
+                                       //it needs to be calibrated anyways 
     turret->run(xAxisValue < 0 ? FORWARD : BACKWARD);
   }  
 }
