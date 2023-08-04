@@ -1,4 +1,3 @@
-
 #include <nRF24L01.h> // nrf library 
 #include <printf.h>
 #include <RF24.h>
