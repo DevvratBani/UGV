@@ -50,8 +50,8 @@ void loop()
     int steps      = data[2];
     int flexSensorValue = data[3];
 
-    leftMotor->setSpeed(abs(motorSpeed)); // try to put actual speed value here, OR
-    rightMotor->setSpeed(abs(motorSpeed)); // try to put setSpeed(yAxisValue), OR 
+    leftMotor->setSpeed(abs(yAxisValue)); // try to put actual speed value here, OR
+    rightMotor->setSpeed(abs(yAxisValue)); // try to put setSpeed(yAxisValue), OR 
                                            // define speed and map it with yAxisValue
                                            
     // Control the main motors forward/backward based on joystick input
@@ -61,17 +61,17 @@ void loop()
     if(xAxisValue > 0)
     {
       leftMotor->run(FORWARD);
-      rightMotor_>run(BACKWARD);
+      rightMotor->run(BACKWARD);
     }
     else if(xAxisValue < 0)
     {
       leftMotor->run(BACKWARD);
-      rightMotor_>run(FORWARD);
+      rightMotor->run(FORWARD);
     }
     else 
     {
-      leftMotor->stop(); 
-      rightMotor->stop();
+      leftMotor->setSpeed(0); 
+      rightMotor->setSpeed(0);
     }
     
     // Use the received step count to control the stepper motor
@@ -79,10 +79,10 @@ void loop()
     stepper->step(steps, FORWARD, SINGLE);
 
     // Control the servo motor based on flex sensor input
-    servoMotor.write(servoPosition);
+    flexServo.write(flexSensorValue);
 
     // troubleshoot this turret too
-    turret->setSpeed(abs(motorspeeed); //this liine wasnt her, but just experimenting
+    turret->setSpeed(abs(motorspeed); //this liine wasnt her, but just experimenting
                                        //it needs to be calibrated anyways 
     turret->run(xAxisValue < 0 ? FORWARD : BACKWARD);
   }  
