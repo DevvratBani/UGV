@@ -1,4 +1,4 @@
-nclude <Encoder.h> // this maynot be used
+#include <Encoder.h> // this maynot be used
 
 #include <nRF24L01.h> 
 #include <printf.h>
