@@ -52,7 +52,10 @@ void loop()
   data[3] = map(flexSensorValue, 0, 1023, 0, 180); // Flex sensor value (0-180 degrees)
 
   // Send data via NRF24L01 module
-  radio.write(&data, sizeof(data));
-
+  if (radio.write(&data, sizeof(data))) {
+    Serial.println("Data sent: " + String(data[0]) + ", " + String(data[1]) + ", " + String(data[2]) + ", " + String(data[3]));
+  } else {
+    Serial.println("Data failed to send.");
+  }
   delay(50); // Adjust this delay as needed
 }
