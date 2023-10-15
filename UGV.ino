@@ -1,4 +1,4 @@
-#include <Encoder.h> // this maynot be used
+nclude <Encoder.h> // this maynot be used
 
 #include <nRF24L01.h> 
 #include <printf.h>
@@ -50,6 +50,10 @@ void loop()
     int steps      = data[2];
     int flexSensorValue = data[3];
 
+    if (radio.available()) {
+    radio.read(&data, sizeof(data));
+    Serial.println("Data received: " + String(data[0]) + ", " + String(data[1]) + ", " + String(data[2]) + ", " + String(data[3]));}
+
     leftMotor->setSpeed(abs(yAxisValue)); // try to put actual speed value here, OR
     rightMotor->setSpeed(abs(yAxisValue)); // try to put setSpeed(yAxisValue), OR 
                                            // define speed and map it with yAxisValue
@@ -87,14 +91,3 @@ void loop()
     turret->run(xAxisValue < 0 ? FORWARD : BACKWARD);
   }  
 }
-
-
-
-
-
-
-
-
-
-
-    
