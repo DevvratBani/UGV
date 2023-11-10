@@ -7,10 +7,10 @@
 #include <Servo.h>
 #include <Encoder.h>
 
-RF24 radio(9, 10); // CE, CSN pins
-const byte address[6] = "00001";
+RF24 radio(9, 10); // Define the NRF24 module pins (CE, CSN)
 
-// Define analog input pins for joysticks and flex sensor
+const uint64_t pipeAddress = 0xF0F0F0F0E1LL; // Transmitter pipe address
+
 const int xAxisPin = A0;
 const int yAxisPin = A1;
 const int flexSensorPin = A2;
@@ -18,44 +18,39 @@ const int encoderPinA = 2;
 const int encoderPinB = 3;
 
 Encoder myEncoder(encoderPinA, encoderPinB);
-int xAxisValue, yAxisValue, steps, flexSensorValue;
 
-void setup() 
-{
+struct SensorData {
+  int xAxisValue;
+  int yAxisValue;
+  int steps;
+  int flexSensorValue;
+};
+
+SensorData sensorReading;
+
+void setup() {
+  Serial.begin(9600);
   radio.begin();
-  radio.openWritingPipe(address);
-  radio.setPALevel(RF24_PA_HIGH); // try deleting this line it wasnt
-                                  // there before. also try LOW
+  radio.openWritingPipe(pipeAddress);
+  radio.setPALevel(RF24_PA_HIGH);
+  radio.stopListening();
 
   pinMode(xAxisPin, INPUT);
   pinMode(yAxisPin, INPUT);
   pinMode(flexSensorPin, INPUT);
   pinMode(encoderPinA, INPUT);
   pinMode(encoderPinB, INPUT);
-
-
-   Serial.begin(9600);
 }
 
-void loop() 
-{
-  steps = myEncoder.read();
-  xAxisValue = analogRead(xAxisPin);  // Read joystick and sensor values
-  yAxisValue = analogRead(yAxisPin);
-  flexSensorValue = analogRead(flexSensorPin);
+void loop() {
+  // Read sensor data (You need to implement this part)
+  sensorReading.xAxisValue = map(analogRead(A0), 0, 1023, -255, 255);
+  sensorReading.yAxisValue = map(analogRead(A1), 0, 1023, -255, 255);
+  sensorReading.steps = myEncoder.read();
+  sensorReading.flexSensorValue = map(analogRead(A2), 0, 1023, 0, 180);
+  // Transmit sensor data to the receiver
+  radio.write(&sensorReading, sizeof(SensorData));
 
-  // Prepare data to send
-  int data[4];
-  data[0] = map(xAxisValue, 0, 1023, -255, 255); // Joystick X-axis value
-  data[1] = map(yAxisValue, 0, 1023, -255, 255); // Joystick Y-axis value
-  data[2] = steps; // Turret stepper motor value 
-  data[3] = map(flexSensorValue, 0, 1023, 0, 180); // Flex sensor value (0-180 degrees)
-
-  // Send data via NRF24L01 module
-  if (radio.write(&data, sizeof(data))) {
-    Serial.println("Data sent: " + String(data[0]) + ", " + String(data[1]) + ", " + String(data[2]) + ", " + String(data[3]));
-  } else {
-    Serial.println("Data failed to send.");
-  }
-  delay(50); // Adjust this delay as needed
+  // Add a delay or other logic as needed
+  delay(10); // Send data every 1 second, for example
 }
